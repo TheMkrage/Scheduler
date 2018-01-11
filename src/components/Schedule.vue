@@ -37,7 +37,8 @@
 				</td>
 			</tr>
 		</table>
-		<button class="button" :class="{ dominant: !isEditing }" @click="toggleEditing">{{ isEditing ? 'Save' : 'Edit' }}</button>
+		<button class="main-button" :class="{ dominant: !isEditing }" @click="toggleEditing">{{ isEditing ? 'Save' : 'Edit' }}</button>
+		<button class="text-only-button" @click="destructiveButtonPressed">{{ isEditing ? 'Cancel' : 'Delete' }}</button>
 	</div>
 </template>
 
@@ -71,18 +72,30 @@ export default {
 	methods: {
 		toggleEditing() {
 			this.isEditing = !this.isEditing;
+		},
+
+		destructiveButtonPressed() {
+			if (this.isEditing) {
+				this.isEditing = false;
+			} else {
+				this.$emit('delete');
+			}
 		}
 	}
 }
 </script>
 
 <style type="text/css">
-.button {
+.text-only-button {
+	border: 0px solid gray;
+	color: blue;
+}
+.main-button {
 	background-color: white;
 	color: black;
 }
 
-.button.dominant {
+.main-button.dominant {
 	background-color: purple;
 	color: white;
 }
