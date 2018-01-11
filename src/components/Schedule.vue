@@ -1,6 +1,6 @@
 <template>
 	<div class="schedule">
-		<input class="schedule-name" type="text" :value="name"></input>
+		<input class="schedule-name" type="text" v-model="nameFieldText"></input>
 		<table style="width:100%">
 			<tr>
 				<th>Dyno Size</th> 
@@ -16,14 +16,14 @@
 			</tr>
 			<tr v-else>
 				<td>
-					<select v-model="dynoSize">
+					<select v-model="dynoSizeSelection">
 						<option>Free</option>
 						<option>1</option>
 						<option>2</option>
 					</select>
 				</td>
 				<td>
-					<select v-model="frequency">
+					<select v-model="frequencySelection">
 						<option>Daily</option>
 						<option>Hourly</option>
 						<option>Every 10 Minutes</option>
@@ -31,23 +31,27 @@
 				</td>
 				<td>{{lastRun}}</td>
 				<td>{{ today }} 
-					<select v-model="nextRunTime">
-						<option v-for="n in 48">{{ Math.round(n / 2) }}:{{ n % 2 == 0 ? '00' : '30' }}</option>
+					<select v-model="nextRunTimeSelection">
+						<option v-for="n in 48">{{ Math.round(n / 2) }}:{{ n % 2 == 0 ? "00" : "30" }}</option>
 					</select> UTC
 				</td>
 			</tr>
 		</table>
-		<button class="main-button" :class="{ dominant: !isEditing }" @click="toggleEditing">{{ isEditing ? 'Save' : 'Edit' }}</button>
-		<button class="text-only-button" @click="destructiveButtonPressed">{{ isEditing ? 'Cancel' : 'Delete' }}</button>
+		<button class="main-button" :class="{ dominant: !isEditing }" @click="toggleEditing">{{ isEditing ? "Save" : "Edit" }}</button>
+		<button class="text-only-button" @click="destructiveButtonPressed">{{ isEditing ? "Cancel" : "Remove" }}</button>
 	</div>
 </template>
 
 <script>
 export default {
-	name: 'Schedule',
+	name: "Schedule",
 	data () {
 		return {
 			isEditing: false,
+			nameFieldText: this.name,
+			dynoSizeSelection: this.dynoSize,
+			frequencySelection: this.frequency,
+			nextRunTimeSelection: this.nextRunTime,
 		}
 	}, 
 	props: {
@@ -55,7 +59,8 @@ export default {
 		dynoSize: String,
 		frequency: String,
 		lastRun: String,
-		nextRunTime: String
+		nextRunTime: String,
+		id: Number // id of the schedule
 	}, 
 	computed: {
 		today() {
@@ -63,15 +68,22 @@ export default {
 			var tomorrow = new Date();
 			tomorrow.setDate(today.getDate() + 1);
 
-			var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 			var month = monthNames[tomorrow.getMonth()];
 			var day = tomorrow.getDay();
-			return month + ' ' + day;
+			return month + " " + day;
 		}
 	}, 
 	methods: {
 		toggleEditing() {
+			if (this.isEditing) {  
+				console.log(this.dynoSizeSelection);
+				console.log("push");
+				var scheduleToEmit = { id:this.id, name:this.nameFieldText, dynoSize:this.dynoSizeSelection, frequency:this.frequencySelection, nextRunTime:this.nextRunTimeSelection, lastRun: this.lastRun };
+				console.log(scheduleToEmit.dynoSize);
+				this.$emit("save", scheduleToEmit);
+			}
 			this.isEditing = !this.isEditing;
 		},
 
@@ -79,7 +91,8 @@ export default {
 			if (this.isEditing) {
 				this.isEditing = false;
 			} else {
-				this.$emit('delete');
+				var scheduleToEmit = { id:this.id, name:this.nameFieldText, dynoSize:this.dynoSizeSelection, frequency:this.frequencySelection, nextRunTime:this.nextRunTimeSelection, lastRun: this.lastRun };
+				this.$emit("remove", scheduleToEmit);
 			}
 		}
 	}
