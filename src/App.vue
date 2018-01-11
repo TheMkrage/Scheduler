@@ -1,17 +1,16 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <HelloWorld/>
+    <Schedule dynoSize=2 frequency="Daily" lastRun="Yesterday" nextRunTime="1:00"></Schedule>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
+import Schedule from './components/Schedule'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    Schedule
   }
 }
 </script>
