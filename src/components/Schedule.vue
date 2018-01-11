@@ -1,6 +1,6 @@
 <template>
 	<div class="schedule">
-		<input id="schedule-name" type="text"></input>
+		<input class="schedule-name" type="text"></input>
 		<table style="width:100%">
 			<tr>
 				<th>Dyno Size</th> 
@@ -77,10 +77,11 @@ export default {
 </script>
 
 <style type="text/css">
-	.button {
+.button {
 	background-color: white;
 	color: black;
 }
+
 .button.dominant {
 	background-color: purple;
 	color: white;
@@ -95,6 +96,7 @@ export default {
 	margin-right: auto;
 	box-sizing: border-box;
 }
+
 .schedule-name {
 	margin-bottom: 15px;
 	margin-top: 10px;
