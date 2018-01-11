@@ -1,16 +1,16 @@
 <template>
   <div id="app">
-    <Schedule dynoSize=2 frequency="Daily" lastRun="Yesterday" nextRunTime="1:00"></Schedule>
+    <ScheduleList></ScheduleList>
   </div>
 </template>
 
 <script>
-import Schedule from './components/Schedule'
+import ScheduleList from './components/ScheduleList'
 
 export default {
   name: 'app',
   components: {
-    Schedule
+    ScheduleList
   }
 }
 </script>

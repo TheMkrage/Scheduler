@@ -1,6 +1,6 @@
 <template>
 	<div class="schedule">
-		<input class="schedule-name" type="text"></input>
+		<input class="schedule-name" type="text" :value="name"></input>
 		<table style="width:100%">
 			<tr>
 				<th>Dyno Size</th> 
@@ -51,6 +51,7 @@ export default {
 		}
 	}, 
 	props: {
+		name: String,
 		dynoSize: String,
 		frequency: String,
 		lastRun: String,
@@ -105,6 +106,7 @@ export default {
 	border: 1px solid gray;
 	border-radius: 6px;
 	padding: 15px;
+	margin-bottom: 25px; 
 	margin-left: auto;
 	margin-right: auto;
 	box-sizing: border-box;
@@ -115,6 +117,7 @@ export default {
 	margin-top: 10px;
 	height: 25px;
 	width: 90%;
+	padding-left: 10px;
 	border: 1px solid gray;
 	border-radius: 4px;
 }
