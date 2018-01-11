@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<Schedule v-for="schedule in schedules" v-bind="schedule" :key="schedule.id" @save="update" @remove="remove"></Schedule>
+		<button @click="addAJob">Add a new Job</button>
 	</div>
 </template>
 
@@ -35,6 +36,11 @@ export default {
 			var matchingIndex = this.schedules.findIndex(x => x.id == scheduleToDelete.id);
 			this.$delete(this.schedules, matchingIndex); 
 			// must use vue's set to trigger reactivity
+		},
+
+		addAJob() {
+			var newSchedule = { id: Math.random(), name: "2", dynoSize: "Free", frequency: "Daily", lastRun: "Yesterday", nextRunTime: "3:00", isEditingInitial: true};
+			this.schedules.push(newSchedule);
 		}
 	}
 }

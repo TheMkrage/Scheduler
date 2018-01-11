@@ -47,7 +47,7 @@ export default {
 	name: "Schedule",
 	data () {
 		return {
-			isEditing: false,
+			isEditing: this.isEditingInitial,
 			nameFieldText: this.name,
 			dynoSizeSelection: this.dynoSize,
 			frequencySelection: this.frequency,
@@ -60,6 +60,7 @@ export default {
 		frequency: String,
 		lastRun: String,
 		nextRunTime: String,
+		isEditingInitial: Boolean,
 		id: Number // id of the schedule
 	}, 
 	computed: {
