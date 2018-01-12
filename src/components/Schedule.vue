@@ -54,7 +54,7 @@ export default {
 			dynoSizeSelection: this.dynoSize,
 			frequencySelection: this.frequency,
 			nextRunTimeSelection: this.nextRunTime,
-			hasCompletedInitialSave: false
+			hasCompletedInitialSave: !this.isEditingInitial
 		}
 	}, 
 	props: {
@@ -122,7 +122,7 @@ table {
 td, th {
 	padding-left: 20px;
 	text-align: left;
-	font-size: 12px;
+	font-size: 14px;
 	color: black;
 }
 

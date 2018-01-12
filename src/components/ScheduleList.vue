@@ -39,7 +39,7 @@ export default {
 		},
 
 		addAJob() {
-			var newSchedule = { id: Math.random(), name: "2", dynoSize: "Free", frequency: "Daily", lastRun: "Yesterday", nextRunTime: "3:00", isEditingInitial: true};
+			var newSchedule = { id: Math.random(), name: "", dynoSize: "Free", frequency: "Daily", lastRun: "Yesterday", nextRunTime: "3:00", isEditingInitial: true};
 			this.schedules.push(newSchedule);
 		}
 	}
