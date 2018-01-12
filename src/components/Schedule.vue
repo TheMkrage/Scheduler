@@ -54,6 +54,7 @@ export default {
 			dynoSizeSelection: this.dynoSize,
 			frequencySelection: this.frequency,
 			nextRunTimeSelection: this.nextRunTime,
+			hasCompletedInitialSave: false
 		}
 	}, 
 	props: {
@@ -80,18 +81,17 @@ export default {
 	}, 
 	methods: {
 		toggleEditing() {
-			if (this.isEditing) {  
-				console.log(this.dynoSizeSelection);
-				console.log("push");
+			if (this.isEditing) { 
+				this.hasCompletedInitialSave  = true;
 				var scheduleToEmit = { id:this.id, name:this.nameFieldText, dynoSize:this.dynoSizeSelection, frequency:this.frequencySelection, nextRunTime:this.nextRunTimeSelection, lastRun: this.lastRun };
-				console.log(scheduleToEmit.dynoSize);
 				this.$emit("save", scheduleToEmit);
 			}
 			this.isEditing = !this.isEditing;
 		},
 
 		destructiveButtonPressed() {
-			if (this.isEditing) {
+			// if the schedule is being edited and has already saved once then cancel, else remove the selection from the list
+			if (this.isEditing && this.hasCompletedInitialSave) {
 				this.isEditing = false;
 			} else {
 				var scheduleToEmit = { id:this.id, name:this.nameFieldText, dynoSize:this.dynoSizeSelection, frequency:this.frequencySelection, nextRunTime:this.nextRunTimeSelection, lastRun: this.lastRun };
