@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<Schedule v-for="schedule in schedules" v-bind="schedule" :key="schedule.id" @save="update" @remove="remove"></Schedule>
-		<button @click="addAJob">Add a new Job</button>
+		<button class="addJob" @click="addAJob">Add a new Job</button>
 	</div>
 </template>
 
@@ -47,5 +47,17 @@ export default {
 </script>
 
 <style type="text/css">
-	
+	button.addJob {
+		width: 50%;
+		padding-top: 12px;
+		font-size: 18px;
+		padding-bottom: 12px;
+		background-color: #79589F;
+		color: white;
+		border-radius: 4px;
+	}
+
+	button.addJob:hover {
+		background-color: #654887;
+	}
 </style>

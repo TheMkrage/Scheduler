@@ -1,6 +1,6 @@
 <template>
 	<div class="schedule">
-		<input class="schedule-name" type="text" v-model="nameFieldText"></input>
+		<input class="schedule-name" type="text" v-model="nameFieldText" :disabled="!isEditing"></input>
 		<table style="width:100%">
 			<tr>
 				<th>Dyno Size</th> 
@@ -37,8 +37,10 @@
 				</td>
 			</tr>
 		</table>
-		<button class="main-button" :class="{ dominant: !isEditing }" @click="toggleEditing">{{ isEditing ? "Save" : "Edit" }}</button>
-		<button class="text-only-button" @click="destructiveButtonPressed">{{ isEditing ? "Cancel" : "Remove" }}</button>
+		<div class="schedule-buttons">
+			<button class="main-button" :class="{ dominant: isEditing }" @click="toggleEditing">{{ isEditing ? "Save" : "Edit" }}</button>
+			<button class="text-only-button" @click="destructiveButtonPressed">{{ isEditing ? "Cancel" : "Remove" }}</button>
+		</div>
 	</div>
 </template>
 
@@ -101,32 +103,89 @@ export default {
 </script>
 
 <style type="text/css">
-.text-only-button {
-	border: 0px solid gray;
-	color: blue;
+
+button {
+	outline: none;
+	font-size: 12px;
 }
-.main-button {
-	background-color: white;
+
+button:hover {
+	cursor: pointer;
+}
+
+table {
+	padding-bottom: 10px;
+	padding-top: 10px;
+	border-top: 1px solid #d3d3d3;
+}
+
+td, th {
+	padding-left: 20px;
+	text-align: left;
+	font-size: 12px;
 	color: black;
 }
 
+th {
+	color: #7D7D8E;
+	text-transform: uppercase;
+}
+
+.text-only-button {
+	border: 0px solid gray;
+	color: #79589F;
+	background-color: transparent;
+}
+
+.text-only-button:hover {
+	text-decoration: underline;
+}
+
+.main-button {
+	background-color: white;
+	color: #79589F;
+	border-radius: 4px;
+	height: 24px;
+	padding-left: 12px;
+	padding-right: 12px;
+	font-weight: 700;
+	border: 1px solid #79589F;
+}
+
+.main-button:hover {
+	background-color: #e6e6e6;
+}
+
 .main-button.dominant {
-	background-color: purple;
+	background-color: #79589F;
 	color: white;
 }
 
+.main-button.dominant:hover {
+	background-color: #654887;
+}
+
 .schedule {
-	width: 60%;
+	width: 50%;
 	border: 1px solid gray;
 	border-radius: 6px;
-	padding: 15px;
+	padding-top: 15px;
 	margin-bottom: 25px; 
 	margin-left: auto;
 	margin-right: auto;
 	box-sizing: border-box;
 }
-
+.schedule-buttons {
+	border-radius: 0px 0px 4px 4px;
+	background-color: #F5F5F7;
+	border: 1px solid #DCDCDD;
+	padding: 15px;
+	text-align: left;
+}
+   
 .schedule-name {
+	color: #424242;
+	font-size: 14px;
 	margin-bottom: 15px;
 	margin-top: 10px;
 	height: 25px;
