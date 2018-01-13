@@ -13,7 +13,6 @@ npm run dev
 
 ```
 
-The console contains errors whenever a mock endpoint is triggered since it the URL is not a real endpoint.
 Used axios to mock communication with a backend.
-
+The console contains errors whenever a mock endpoint is triggered since the URL is not a real endpoint.
 
