@@ -1,5 +1,5 @@
 <template>
-	<div class="schedule">
+	<div class="schedule" v-if="!isConfirmingRemoval">
 		<input class="schedule-name" type="text" v-model="nameFieldText" :disabled="!isEditing"></input>
 		<table style="width:100%">
 			<tr>
@@ -42,6 +42,12 @@
 			<button class="text-only-button" @click="destructiveButtonPressed">{{ isEditing ? "Cancel" : "Remove" }}</button>
 		</div>
 	</div>
+	<div v-else class="schedule confirm">
+		<h3 style="font-weight: 200">Remove Scheduled Job</h3>
+		<h4 style="font-weight: 200">Are you sure you want to remove this job?</h4>
+		<button class="main-button" @click="destructiveButtonPressed">Cancel</button>
+		<button class="main-button dominant" @click="deletePressed">Remove Job</button>
+	</div>
 </template>
 
 <script>
@@ -49,6 +55,7 @@ export default {
 	name: "Schedule",
 	data () {
 		return {
+			isConfirmingRemoval: false,
 			isEditing: this.isEditingInitial,
 			nameFieldText: this.name,
 			dynoSizeSelection: this.dynoSize,
@@ -81,6 +88,9 @@ export default {
 	}, 
 	methods: {
 		toggleEditing() {
+			if (this.nameFieldText == null || this.nameFieldText == "") {
+				return;
+			}
 			if (this.isEditing) { 
 				this.hasCompletedInitialSave  = true;
 				var scheduleToEmit = { id:this.id, name:this.nameFieldText, dynoSize:this.dynoSizeSelection, frequency:this.frequencySelection, nextRunTime:this.nextRunTimeSelection, lastRun: this.lastRun };
@@ -93,10 +103,22 @@ export default {
 			// if the schedule is being edited and has already saved once then cancel, else remove the selection from the list
 			if (this.isEditing && this.hasCompletedInitialSave) {
 				this.isEditing = false;
-			} else {
+				// set current values back to default field values for next edit
+				this.nameFieldText = this.name;
+				this.dynoSizeSelection = this.dynoSize;
+				this.frequencySelection = this.frequency;
+				this.nextRunTimeSelection = this.nextRunTime;
+			} else if (this.isEditingInitial) {
 				var scheduleToEmit = { id:this.id, name:this.nameFieldText, dynoSize:this.dynoSizeSelection, frequency:this.frequencySelection, nextRunTime:this.nextRunTimeSelection, lastRun: this.lastRun };
 				this.$emit("remove", scheduleToEmit);
+			} else {
+				this.isConfirmingRemoval = !this.isConfirmingRemoval;
 			}
+		},
+
+		deletePressed() {
+			var scheduleToEmit = { id:this.id, name:this.nameFieldText, dynoSize:this.dynoSizeSelection, frequency:this.frequencySelection, nextRunTime:this.nextRunTimeSelection, lastRun: this.lastRun };
+			this.$emit("remove", scheduleToEmit);
 		}
 	}
 }
@@ -130,6 +152,7 @@ th {
 	color: #7D7D8E;
 	text-transform: uppercase;
 }
+
 
 .text-only-button {
 	border: 0px solid gray;
@@ -165,9 +188,25 @@ th {
 	background-color: #654887;
 }
 
+.schedule.confirm button {
+ 	font-size: 14px;
+ 	height: 32px;
+}
+
+.schedule.confirm .main-button {
+ 	color: white;
+ 	margin-right: 5px;
+ 	border: 1px solid white;
+ 	background-color: transparent;
+}
+.schedule.confirm .main-button.dominant {
+ 	background-color: #79589F;
+ 	border: 0px solid transparent;
+}
+
 .schedule {
 	width: 50%;
-	border: 1px solid gray;
+	border: 1px solid #DCDCDC;
 	border-radius: 6px;
 	padding-top: 15px;
 	margin-bottom: 25px; 
@@ -175,6 +214,13 @@ th {
 	margin-right: auto;
 	box-sizing: border-box;
 }
+
+.schedule.confirm {
+	background: rgba(0,0,0,0.9);
+	height: 198px;
+	color: white;
+}
+
 .schedule-buttons {
 	border-radius: 0px 0px 4px 4px;
 	background-color: #F5F5F7;
@@ -191,7 +237,7 @@ th {
 	height: 25px;
 	width: 90%;
 	padding-left: 10px;
-	border: 1px solid gray;
+	border: 1px solid #DCDCDC;
 	border-radius: 4px;
 }
 </style>
