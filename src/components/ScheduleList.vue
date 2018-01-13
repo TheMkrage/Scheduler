@@ -6,7 +6,8 @@
 </template>
 
 <script type="text/javascript">
-import Schedule from './Schedule'
+import Schedule from './Schedule';
+import axios from 'axios';
 
 export default {
 	name: 'ScheduleList',
@@ -22,25 +23,41 @@ export default {
 	components: {
 		Schedule
 	},
+	created() {
+		// load schedules from endpoint
+		axios.get(`http://schedules.com/schedules`)
+    .then(response => {
+      this.schedules = response.data
+    })
+    .catch(e => {
+      // respond to error if needed
+    })
+	},
 	methods: {
 		update(scheduleToUpdate) {
 			// get and update the matching schedule from schedules
 			var matchingIndex = this.schedules.findIndex(x => x.id == scheduleToUpdate.id);
 			this.$set(this.schedules, matchingIndex, scheduleToUpdate); 
 			// must use vue's set to trigger reactivity
+			// update backend
+			axios.put(`http://schedules.com/schedules`, scheduleToUpdate)
 		},
 
 		remove(scheduleToDelete) {
-			console.log("bleh");
 			// get and update the matching schedule from schedules
 			var matchingIndex = this.schedules.findIndex(x => x.id == scheduleToDelete.id);
 			this.$delete(this.schedules, matchingIndex); 
-			// must use vue's set to trigger reactivity
+			// must use vue's delete to trigger reactivity
+			// remove in backend
+			axios.delete(`http://schedules.com/schedules`, { params: { id: scheduleToDelete.id } })
 		},
 
 		addAJob() {
 			var newSchedule = { id: Math.random(), name: "", dynoSize: "Free", frequency: "Daily", lastRun: "Yesterday", nextRunTime: "3:00", isEditingInitial: true};
 			this.schedules.push(newSchedule);
+			// create in backend
+			axios.post(`http://schedules.com/schedules`, newSchedule)
+			// in reality, we would probably add the newSchedule to this.schedules in a handler from the post request because we would need the id object generated from the backend. For this example, I generated a random id and used it
 		}
 	}
 }
