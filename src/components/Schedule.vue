@@ -1,4 +1,5 @@
 <template>
+	<!-- use the schedule class if we are not confirming removal. IF we are confirmingRemoval, display the overlay -->
 	<div class="schedule" v-if="!isConfirmingRemoval">
 		<input class="schedule-name" type="text" v-model="nameFieldText" :disabled="!isEditing"></input>
 		<table style="width:100%">
@@ -8,6 +9,7 @@
 				<th>Last Run</th>
 				<th>Next Run</th>
 			</tr>
+			<!-- Using isEditing, decide to display the data or display edit fields-->
 			<tr v-if="!isEditing">
 				<td>{{ dynoSize }}</td> 
 				<td>{{ frequency }}</td>
@@ -32,7 +34,8 @@
 				<td>{{lastRun}}</td>
 				<td>{{ today }} 
 					<select v-model="nextRunTimeSelection">
-						<option v-for="n in 48">{{ Math.round(n / 2) }}:{{ n % 2 == 0 ? "00" : "30" }}</option>
+						<!-- Calculate every half hour as an option -->
+						<option v-for="n in 48">{{ Math.round(n / 2) }} : {{ n % 2 == 0 ? "00" : "30" }}</option>
 					</select> UTC
 				</td>
 			</tr>
@@ -55,8 +58,10 @@ export default {
 	name: "Schedule",
 	data () {
 		return {
+			// flags for apperance
 			isConfirmingRemoval: false,
 			isEditing: this.isEditingInitial,
+			// flags to store the value of the edit fields. Start out as whatever the schedule has
 			nameFieldText: this.name,
 			dynoSizeSelection: this.dynoSize,
 			frequencySelection: this.frequency,
@@ -65,15 +70,17 @@ export default {
 		}
 	}, 
 	props: {
+		// schedule props passed from ScheduleList
 		name: String,
 		dynoSize: String,
 		frequency: String,
 		lastRun: String,
 		nextRunTime: String,
-		isEditingInitial: Boolean,
-		id: Number // id of the schedule
+		id: Number, // id of the schedule
+		isEditingInitial: Boolean // this is true if we should be editing when the Schedule is created		
 	}, 
 	computed: {
+		// Return today in string form
 		today() {
 			var today = new Date();
 			var tomorrow = new Date();
@@ -88,9 +95,11 @@ export default {
 	}, 
 	methods: {
 		toggleEditing() {
+			// if the user didn't fill in name Field, don't save
 			if (this.nameFieldText == null || this.nameFieldText == "") {
 				return;
 			}
+			// if we are editing, save and then toggle
 			if (this.isEditing) { 
 				this.hasCompletedInitialSave  = true;
 				var scheduleToEmit = { id:this.id, name:this.nameFieldText, dynoSize:this.dynoSizeSelection, frequency:this.frequencySelection, nextRunTime:this.nextRunTimeSelection, lastRun: this.lastRun };
@@ -109,9 +118,11 @@ export default {
 				this.frequencySelection = this.frequency;
 				this.nextRunTimeSelection = this.nextRunTime;
 			} else if (this.isEditingInitial) {
+				// remove if we are still setting the initial fields of this Schedule
 				var scheduleToEmit = { id:this.id, name:this.nameFieldText, dynoSize:this.dynoSizeSelection, frequency:this.frequencySelection, nextRunTime:this.nextRunTimeSelection, lastRun: this.lastRun };
 				this.$emit("remove", scheduleToEmit);
 			} else {
+				// if remove is pressed, add the confirmation overlay
 				this.isConfirmingRemoval = !this.isConfirmingRemoval;
 			}
 		},
