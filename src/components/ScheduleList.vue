@@ -1,7 +1,7 @@
 <template>
 	<div>
-		<Schedule v-for="schedule in schedules" v-bind="schedule" :key="schedule.id" @save="update" @remove="remove"></Schedule>
-		<button class="addJob" @click="addAJob">Add a new Job</button>
+		<Schedule v-for="schedule in schedules" v-bind="schedule" :key="schedule.id" @save="update" @remove="remove" @initialEditingEnded="initialEditingEnded"></Schedule>
+		<button class="addJob" v-show="!isEditingInitial" @click="addAJob">Add a new Job</button>
 	</div>
 </template>
 
@@ -18,6 +18,7 @@ export default {
 					{ id: 5, name: "2", dynoSize: "Free", frequency: "Daily", lastRun: "Yesterday", nextRunTime: "2:00" }
 					// assume id is a primary key for schedules
 				],
+			isEditingInitial: false
 		}
 	}, 
 	components: {
@@ -58,6 +59,12 @@ export default {
 			// create in backend
 			axios.post(`http://schedules.com/schedules`, newSchedule)
 			// in reality, we would probably add the newSchedule to this.schedules in a handler from the post request because we would need the id object generated from the backend. For this example, I generated a random id and used it
+			this.isEditingInitial = true
+		},
+
+		// ran when editing of a initial schedule ends (this brings back the Add Job button)
+		initialEditingEnded() {
+			this.isEditingInitial = false;
 		}
 	}
 }

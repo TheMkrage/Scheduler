@@ -35,7 +35,7 @@
 				<td>{{ today }} 
 					<select v-model="nextRunTimeSelection">
 						<!-- Calculate every half hour as an option -->
-						<option v-for="n in 48">{{ Math.round(n / 2) }} : {{ n % 2 == 0 ? "00" : "30" }}</option>
+						<option v-for="n in 48">{{ Math.round(n / 2) }}:{{ n % 2 == 0 ? "00" : "30" }}</option>
 					</select> UTC
 				</td>
 			</tr>
@@ -66,7 +66,7 @@ export default {
 			dynoSizeSelection: this.dynoSize,
 			frequencySelection: this.frequency,
 			nextRunTimeSelection: this.nextRunTime,
-			hasCompletedInitialSave: !this.isEditingInitial
+			hasCompletedInitialSave: !this.isEditingInitial // will be true if schedule is loaded, false if added from Add a Job button
 		}
 	}, 
 	props: {
@@ -101,7 +101,11 @@ export default {
 			}
 			// if we are editing, save and then toggle
 			if (this.isEditing) { 
-				this.hasCompletedInitialSave  = true;
+				if (!this.hasCompletedInitialSave) {
+					this.hasCompletedInitialSave = true;
+					this.$emit("initialEditingEnded");
+				}
+				
 				var scheduleToEmit = { id:this.id, name:this.nameFieldText, dynoSize:this.dynoSizeSelection, frequency:this.frequencySelection, nextRunTime:this.nextRunTimeSelection, lastRun: this.lastRun };
 				this.$emit("save", scheduleToEmit);
 			}
@@ -118,6 +122,9 @@ export default {
 				this.frequencySelection = this.frequency;
 				this.nextRunTimeSelection = this.nextRunTime;
 			} else if (this.isEditingInitial) {
+				if (!this.hasCompletedInitialSave) {
+					this.$emit("initialEditingEnded");
+				}
 				// remove if we are still setting the initial fields of this Schedule
 				var scheduleToEmit = { id:this.id, name:this.nameFieldText, dynoSize:this.dynoSizeSelection, frequency:this.frequencySelection, nextRunTime:this.nextRunTimeSelection, lastRun: this.lastRun };
 				this.$emit("remove", scheduleToEmit);
