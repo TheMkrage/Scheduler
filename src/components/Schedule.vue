@@ -35,7 +35,7 @@
 				<td>{{ today }} 
 					<select v-model="nextRunTimeSelection">
 						<!-- Calculate every half hour as an option -->
-						<option v-for="n in 48">{{ Math.round(n / 2) }}:{{ n % 2 == 0 ? "00" : "30" }}</option>
+						<option v-for="n in 46">{{ Math.round(n / 2) }}:{{ n % 2 == 0 ? "30" : "00" }}</option>
 					</select> UTC
 				</td>
 			</tr>
@@ -89,8 +89,15 @@ export default {
 			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 			var month = monthNames[tomorrow.getMonth()];
-			var day = tomorrow.getDay();
+			var day = tomorrow.getDate();
 			return month + " " + day;
+		},
+		inTenMinutes() {
+			var today = new Date();
+			var inTenMinutes = new Date();
+			inTenMinutes.setMinutes(today.getMinutes() + 10);
+
+			return inTenMinutes.getHours() + ":" + inTenMinutes.getMinutes();
 		}
 	}, 
 	methods: {
